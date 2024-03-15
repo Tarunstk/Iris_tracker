@@ -1,0 +1,117 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1671\cocoasubrtf200
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 clc;\
+clear cam;\
+close all;\
+cam=webcam();\
+preview(cam);\
+for i=5:120\
+d\{i\}=snapshot(cam);\
+x=cell2mat(d(i));\
+y=rgb2gray(x);\
+% for k=1:720\
+%     for j=1:1280\
+%         if y(k,j)>=35\
+%             y(k,j)=255;\
+%         else \
+%             y(k,j)=0;\
+%         end\
+%     end\
+% end\
+%y1= imbinarize(y,'adaptive','ForegroundPolarity','dark','Sensitivity',0.6);\
+imwrite(y,['project',int2str(i), '.jpg']);\
+end\
+multi=dir('project');\
+closePreview(cam);\
+u=50;\
+% im1=imread(['project',int2str(u),'.jpg']);\
+% imshow(im1);\
+%h=imrect(im1);\
+% while i=60;\
+% centers[1:];\
+% radii[1:];\
+i=1;\
+j=1;\
+figure('Name','Extracted Frames','NumberTitle','off');\
+for m=u:10:120\
+im=imread(['project',int2str(m),'.jpg']);\
+\
+subplot(2,4,i);\
+imshow(im);\
+i=i+1;\
+%imc=imcrop(im,h);\
+[center,radius] = imfindcircles(im,[10 30],'objectPolarity','dark','Sensitivity',0.88);\
+% centers = imfindcircles(im<50);\
+\
+ viscircles(center,radius);\
+ c=isempty(center);\
+ if(c==1)\
+     disp('Center Not Found, Run Again');\
+     break;\
+ end\
+% while(center()==0)\
+     %continue;\
+%  if(center(1,1)>=500 && center(1,1)<=68)\
+     ax(m)=center(1,1);\
+     ay(m)=center(1,2);\
+     bx(m)=center(2,1);\
+     by(m)=center(2,2);\
+   if(m>=6)\
+     Rlx(m-1)=ax(m)-ax(u);\
+     Rly(m-1)=ay(m)-ay(u);\
+     Rrx(m-1)=bx(m)-bx(u);\
+     Rry(m-1)=by(m)-by(u);\
+     edL(m-1)=sqrt((Rlx(m-1).^2)+(Rly(m-1).^2));\
+     edR(m-1)=sqrt((Rrx(m-1).^2)+(Rry(m-1).^2));\
+   end\
+   end\
+ \
+\
+\
+\
+M1=mean(edL);\
+M2=mean(edR);\
+M=(M1+M2)/2;\
+\
+if(M>5)\
+    disp('Diagnosis : ADHD Positive');\
+    %disp('Eye Deviation coefficient %d',M1);\
+else if(M>0 && M<4.9)\
+    disp('Diagnosis : ADHD Negative');\
+    %disp('Eye Deviation coefficient %d',M1);\
+    \
+else\
+    disp('Error in detecting centers');\
+    disp('Keep eyes wide open and try to focus on the green light and try again');\
+% M2=mean(edR);\
+% M=(M1+M2)/2;\
+    end\
+end\
+\
+clear cam;\
+% j=1:60;\
+% i=1:60;\
+\
+% for i=1:720\
+%     for j=1:1080\
+%         if d(i,j)>=50\
+%             d(i,j)=255;\
+%         else \
+%             d(i,j)=0;\
+%         end\
+%     end\
+% end\
+%   numFrames = vid.NumberOfFrames;\
+%   n=numFrames;\
+\
+% for i = 1:60\
+%   frames = read(x,i);\
+%    imwrite(frames,['project',int2str(i), '.jpg']);\
+% end \
+% multi = dir('project');\
+}
